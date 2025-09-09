@@ -12,8 +12,8 @@ const char* ssid = "YOUR_WIFI_SSID";
 const char* password = "YOUR_WIFI_PASSWORD";
 
 // ====== Telegram Bot Credentials ======
-String botToken = "YOUR_BOT_TOKEN";  
-String chatID   = "YOUR_CHAT_ID";    
+String botToken = "5379125731:AAHQ9eXgIjZhhdzX3oarlLZS5pt20dRcXpo";  
+String chatID   = "-1003003003202";    
 
 // ====== Sensor Pins ======
 const int gasSensorPin = 34;   // ESP32 (ADC pin), use A0 for ESP8266
