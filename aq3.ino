@@ -26,11 +26,24 @@ DHT dht(dhtPin, DHTTYPE);
 
 // ====== Function to send message to Telegram ======
 void sendToTelegram(String message) {
-  if(WiFi.status() == WL_CONNECTED) {
+  if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-    String url = "https://api.telegram.org/bot" + botToken + "/sendMessage?chat_id=" + chatID + "&text=" + message;
+    String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
+    
     http.begin(url);
-    int httpCode = http.GET();
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    // POST payload (chat_id + text)
+    String payload = "chat_id=" + chatID + "&text=" + message;
+    int httpCode = http.POST(payload);
+
+    if (httpCode > 0) {
+      String response = http.getString();
+      Serial.println("Telegram Response: " + response);
+    } else {
+      Serial.println("Telegram Error: " + String(http.errorToString(httpCode)));
+    }
+
     http.end();
   }
 }
@@ -69,13 +82,14 @@ void loop() {
   }
 
   // ===== Prepare message =====
-  String message = "📡 Sensor Readings:\n";
-  message += "MQ-6 Gas Raw: " + String(rawValue) + "\n";
-  message += "MQ-6 Voltage: " + String(voltage, 2) + " V\n";
-  message += "Temp: " + String(temp, 1) + " °C\n";
+  String message = "📡 Sensor Readings:%0A";  // %0A = newline for Telegram
+  message += "MQ-6 Gas Raw: " + String(rawValue) + "%0A";
+  message += "MQ-6 Voltage: " + String(voltage, 2) + " V%0A";
+  message += "Temp: " + String(temp, 1) + " °C%0A";
   message += "Humidity: " + String(hum, 1) + " %";
 
   // ===== Debug to Serial =====
+  Serial.println("Sending message to Telegram...");
   Serial.println(message);
   Serial.println("---------------------------");
 
